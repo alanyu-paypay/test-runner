@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: release-changed-endpoints
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'releases/**'
+
+jobs:
+  get_changed_endpoints:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      endpoints: ${{ steps.extract-text.outputs.endpoints }}
+    steps:
+      - name: Get changed endpoints from PR
+        run: |
+          echo "PR Description: ${{ github.event.pull_request.body }}"
+      - name: Extract Text from PR Description
+      - id: extract-text
+        run: |
+          pr_description=${{ github.event.pull_request.body }}
+          changed_endpoints=$(echo "$pr_description" | awk '/## Changed EndPoints/{p=1; next} p && !/^##/ && NF{print})
+          if [ -n "$changed_endpoints" ]; then
+            echo "Changed endpoints are: $changed_endpoints"
+            echo "endpoints=$changed_endpoints" >> "$GITHUB_OUTPUT"            
+          else
+            echo "No changed endpoints"
+          fi
+        shell: bash
+  update_wiki:
+    runs-on: ubuntu-latest
+    needs: get_changed_endpoints
+    if: ${{needs.get_changed_endpoints.outputs.endpoints}} != ""
+    steps:
+      - name: Print Changed endpoints
+        run: |
+          echo "${{needs.get_changed_endpoints.outputs.endpoints}}"
