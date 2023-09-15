@@ -23,8 +23,7 @@ jobs:
       - name: Extract Text from PR Description
         id: extract-text
         run: |
-          pr_description=${{ github.event.pull_request.body }}
-          changed_endpoints=$(echo "$pr_description" | awk '/## Changed EndPoints/{p=1; next} p && !/^##/ && NF{print})
+          changed_endpoints=$(echo ${{ github.event.pull_request.body }} | awk '/## Changed EndPoints/{p=1; next} p && !/^##/ && NF{print})
           if [ -n "$changed_endpoints" ]; then
             echo "Changed endpoints are: $changed_endpoints"
             echo "endpoints=$changed_endpoints" >> "$GITHUB_OUTPUT"            
