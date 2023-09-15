@@ -25,7 +25,7 @@ jobs:
           PR_BODY: ${{ github.event.pull_request.body }}
         id: extract-text
         run: |
-          changed_endpoints=$(echo "$PR_BODY" | awk '/## Changed EndPoints/{p=1; next} p && !/^##/ && NF{print})
+          changed_endpoints=$(echo "$PR_BODY" | awk '/## Changed EndPoints/{p=1; next} p && !/^##/ && NF{print}')
           if [ -n "$changed_endpoints" ]; then
             echo "Changed endpoints are: $changed_endpoints"
             echo "endpoints=$changed_endpoints" >> "$GITHUB_OUTPUT"            
