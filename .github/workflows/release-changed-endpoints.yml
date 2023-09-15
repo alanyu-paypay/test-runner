@@ -27,8 +27,11 @@ jobs:
         run: |
           changed_endpoints=$(echo "$PR_BODY" | awk '/## Changed Endpoints/{p=1; next} p && !/^##/ && NF{print}')
           if [ -n "$changed_endpoints" ]; then
-            echo "Changed endpoints are: $changed_endpoints"
-            echo "endpoints=$changed_endpoints" >> "$GITHUB_OUTPUT"            
+            echo "Changed endpoints are:"
+            echo "$changed_endpoints"
+            echo "endpoints<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$changed_endpoints" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
           else
             echo "No changed endpoints"
           fi
