@@ -51,6 +51,7 @@ jobs:
         with:
           script: |
             const filePrefix = 'Changed Endpoints ';
+            let endpoints = new Set<string>();
       - name: Commit wiki to git
         run: |
           git add .
