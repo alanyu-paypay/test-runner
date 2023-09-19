@@ -50,7 +50,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const filePrefix = "Changed Endpoints "
+            const filePrefix = "Changed Endpoints ";
             const endpoints = new Set<string>();
             labels = await github.rest.issues.listLabelsOnIssue({
               issue_number: context.issue.number,
