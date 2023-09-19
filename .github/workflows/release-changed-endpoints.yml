@@ -75,21 +75,21 @@ jobs:
                     core.setFailed(err);
                 }
               }
-              const prChangedPoints = `${{ needs.get_changed_endpoints.outputs.endpoints }}`;
-              prChangedPoints.split(/\r?\n/).forEach(line => {
-                    endpoints.add(line);
-                    });
-              // Write changed endpoints to file
-              const stream = fs.createWriteStream(fileName);
-              endpoints.forEach((endpoint) => {
-                stream.write(endpoint + '\n');
-              });
-              stream.end();
+              # const prChangedPoints = `${{ needs.get_changed_endpoints.outputs.endpoints }}`;
+              # prChangedPoints.split(/\r?\n/).forEach(line => {
+              #       endpoints.add(line);
+              #       });
+              # // Write changed endpoints to file
+              # const stream = fs.createWriteStream(fileName);
+              # endpoints.forEach((endpoint) => {
+              #   stream.write(endpoint + '\n');
+              # });
+              # stream.end();
 
-              stream.on('error', (err) => {
-                core.error(`Error writing to ${fileName}: ${err}`);
-                core.setFailed(err);
-              });
+              # stream.on('error', (err) => {
+              #   core.error(`Error writing to ${fileName}: ${err}`);
+              #   core.setFailed(err);
+              # });
             } else {
               core.setFailed('No release version label found')
             }
