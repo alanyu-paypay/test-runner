@@ -21,13 +21,17 @@ jobs:
         run: |
           echo "PR Description: ${{ github.event.pull_request.body }}"
       - name: Extract Text from PR Description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         id: extract-text
         run: |
-          pr_description=${{ github.event.pull_request.body }}
-          changed_endpoints=$(echo "$pr_description" | awk '/## Changed EndPoints/{p=1; next} p && !/^##/ && NF{print})
+          changed_endpoints=$(echo "$PR_BODY" | awk '/## Changed Endpoints/{p=1; next} p && !/^##/ && NF{print}')
           if [ -n "$changed_endpoints" ]; then
-            echo "Changed endpoints are: $changed_endpoints"
-            echo "endpoints=$changed_endpoints" >> "$GITHUB_OUTPUT"            
+            echo "Changed endpoints are:"
+            echo "$changed_endpoints"
+            echo "endpoints<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$changed_endpoints" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
           else
             echo "No changed endpoints"
           fi
@@ -37,6 +41,66 @@ jobs:
     needs: get_changed_endpoints
     if: ${{needs.get_changed_endpoints.outputs.endpoints}} != ""
     steps:
-      - name: Print Changed endpoints
+      - name: Checkout wiki
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}.wiki
+      - name: Create changed endpoints wiki
+        id: tagName
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const filePrefix = "Changed Endpoints "
+            const endpoints = new Set<string>();
+            labels = await github.rest.issues.listLabelsOnIssue({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            // Get PR release version label
+            const versionRegex = '^\[0-9]+\.\[0-9]+\.\[0-9]+$';
+            const versionLabel = labels.data.find((label) => versionRegex.test(label));
+            // Check valid version label
+            if (versionLabel) {
+              const fs = require('fs')
+              const fileName = filePrefix + versionLabel + ".md";
+              // If file exists, read from file
+              if (fs.existsSync(fileName)) {
+                try {
+                  const contents = fs.readFileSync(fileName)
+                  contents.split(/\r?\n/).forEach(line => {
+                    endpoints.add(line);
+                    });
+                  // remove the file
+                  fs.unlinkSync(fileName)                                    
+                } catch(err) {
+                    core.error("Error while read/delete the file");
+                    core.setFailed(err);
+                }
+              }
+              const prChangedPoints = '{{needs.get_changed_endpoints.outputs.endpoints}}';
+              prChangedPoints.split(/\r?\n/).forEach(line => {
+                    endpoints.add(line);
+                    });
+              // Write changed endpoints to file
+              const stream = fs.createWriteStream(fileName);
+              endpoints.forEach((endpoint) => {
+                stream.write(endpoint + '\n');
+              });
+              stream.end();
+
+              stream.on('error', (err) => {
+                core.error(`Error writing to ${fileName}: ${err}`);
+                core.setFailed(err);
+              });
+            } else {
+              core.setFailed('No release version label found')
+            }
+      - name: Commit wiki to git
         run: |
-          echo "${{needs.get_changed_endpoints.outputs.endpoints}}"
+          git add .
+          git config --global user.name 'CI bot'
+          git config --global user.email 'paypay-bff@users.noreply.github.com'
+          git commit -m "updated releasae wiki"
+          git push
