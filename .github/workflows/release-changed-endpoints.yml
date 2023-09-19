@@ -50,8 +50,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const filePrefix = "Changed Endpoints ";
-            const endpoints = new Set<string>();
+            const filePrefix = 'Changed Endpoints ';
       - name: Commit wiki to git
         run: |
           git add .
