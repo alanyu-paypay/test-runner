@@ -52,46 +52,6 @@ jobs:
           script: |
             const filePrefix = "Changed Endpoints ";
             const endpoints = new Set<string>();
-
-            // Get PR release version label
-            const versionRegex = new RegExp('^release\/([0-9]+\.[0-9]+\.[0-9]\+)$');
-            const match = `${{ github.event.pull_request.base.ref }}`.match(versionRegex)
-            const versionLabel = match[1]
-            // Check valid version label
-            //if (versionLabel) {
-            //  const fs = require('fs')
-            //  const fileName = filePrefix + versionLabel + ".md";
-            //  // If file exists, read from file
-            //  if (fs.existsSync(fileName)) {
-            //    try {
-            //      const contents = fs.readFileSync(fileName)
-            //      contents.split(/\r?\n/).forEach(line => {
-            //        endpoints.add(line);
-            //        });
-            //      // remove the file
-            //      fs.unlinkSync(fileName)                                    
-            //    } catch(err) {
-            //        core.error("Error while read/delete the file");
-            //        core.setFailed(err);
-            //    }
-            //  }
-            //  const prChangedPoints = `${{ needs.get_changed_endpoints.outputs.endpoints }}`;
-            //  prChangedPoints.split(/\r?\n/).forEach(line => {
-            //        endpoints.add(line);
-            //        });
-            //  // Write changed endpoints to file
-            //  const stream = fs.createWriteStream(fileName);
-            //  endpoints.forEach((endpoint) => {
-            //    stream.write(endpoint + '\n');
-            //  });
-            //  stream.end();
-            //  stream.on('error', (err) => {
-            //    core.error(`Error writing to ${fileName}: ${err}`);
-            //    core.setFailed(err);
-            //  });
-            //} else {
-            //  core.setFailed('No release version label found')
-            //}
       - name: Commit wiki to git
         run: |
           git add .
