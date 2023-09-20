@@ -42,7 +42,7 @@ jobs:
     if: ${{needs.get_changed_endpoints.outputs.endpoints}} != ""
     steps:
       - name: Checkout wiki
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: ${{github.repository}}.wiki
       - name: Create changed endpoints wiki
