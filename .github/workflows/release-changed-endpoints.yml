@@ -50,7 +50,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const filePrefix = 'Changed Endpoints ';
+            const filePrefix = 'Changed-Endpoints-';
             let endpoints = new Set();
             // Get PR release version label
             const versionRegex = new RegExp('^release\/([0-9]+\.[0-9]+\.[0-9]\+)$');
