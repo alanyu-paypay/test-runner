@@ -82,7 +82,9 @@ jobs:
              // Write changed endpoints to file
              const stream = fs.createWriteStream(fileName);
              endpoints.forEach((endpoint) => {
-               stream.write(endpoint + '\n');
+              if(endpoint.length > 0) {
+                stream.write(endpoint + '\n');
+              }               
              });
              stream.end();
              stream.on('error', (err) => {
