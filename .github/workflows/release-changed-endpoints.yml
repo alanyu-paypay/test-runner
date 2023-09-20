@@ -63,8 +63,9 @@ jobs:
              // If file exists, read from file
              if (fs.existsSync(fileName)) {
                try {
-                 const contents = fs.readFileSync(fileName)
-                 contents.split(/\r?\n/).forEach(line => {
+                 const buffer = fs.readFileSync(fileName)
+                 const content = buffer.toString();
+                 content.split(/\r?\n/).forEach(line => {
                    endpoints.add(line);
                    });
                  // remove the file
