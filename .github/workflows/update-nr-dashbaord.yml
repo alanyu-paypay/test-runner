@@ -62,24 +62,14 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs');
+            const fs = require('fs').promises;
             const readline = require('readline');
             const fileName = `${{ needs.get_changed_endpoints_info.outputs.fileName }}`;
             const version = `${{ needs.get_changed_endpoints_info.outputs.releaseVersion }}`;
             
             // Read the JSON file
-            var config;
-            fs.readFile('tool/new-relic/dashboard-generator/config/bff-release-ci.json', 'utf8', (err, data) => {
-              if (err) {
-                core.error('Error reading config file:', err);
-                core.setFailed(err);
-              }
-            
-              // Parse the JSON data
-              config = JSON.parse(data);
-              console.log(config);
-            });
-            console.log(config);
+            let config = fs.readFile('tool/new-relic/dashboard-generator/config/bff-release-ci.json', 'utf8');
+            config = JSON.parse(data);              
             
             // Set dashboard title
             config.title = `BFF Release ${version} - Changed Endpoints`;
