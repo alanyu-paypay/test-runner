@@ -39,6 +39,11 @@ jobs:
         with:
           repository: ${{github.repository}}.wiki
           sparse-checkout: |
-            ${{ needs.get_changed_endpoints_file_name.outputs.fileName }}.md
+            ${{ needs.get_changed_endpoints_file_name.outputs.fileName }}
           sparse-checkout-cone-mode: false
           path: wiki
+      - name: Check file
+        run: |
+          ls wiki
+          cat wiki/${{ needs.get_changed_endpoints_file_name.outputs.fileName }}
+       
