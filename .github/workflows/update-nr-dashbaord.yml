@@ -62,13 +62,13 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs').promises;
+            const fs = require('fs')
             const readline = require('readline');
             const fileName = `${{ needs.get_changed_endpoints_info.outputs.fileName }}`;
             const version = `${{ needs.get_changed_endpoints_info.outputs.releaseVersion }}`;
             
             // Read the JSON file
-            let config = fs.readFile('tool/new-relic/dashboard-generator/config/bff-release-ci.json', 'utf8');
+            let config = fs.readFileSync('tool/new-relic/dashboard-generator/config/bff-release-ci.json', 'utf8');
             config = JSON.parse(data);              
             
             // Set dashboard title
@@ -91,11 +91,6 @@ jobs:
             });
 
             // Write to file
-            fs.writeFile('tool/new-relic/dashboard-generator/config/bff-release-ci.json', JSON.stringify(config, null, 2), 'utf8', err => {
-              if (err) {
-                core.error('Error writing config file:', err);
-                core.setFailed(err);
-              }
-            });
+            fs.writeFileSync('tool/new-relic/dashboard-generator/config/bff-release-ci.json', JSON.stringify(config, null, 2), 'utf8');
       - name: Check config file
         run: cat tool/new-relic/dashboard-generator/config/bff-release-ci.json
