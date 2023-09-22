@@ -57,6 +57,7 @@ jobs:
           repository: Pay-Baymax/bff-tools
           ref: master
           path: tool
+          token: ${{ secrets.PERSONAL_PAT }}
       - name: Update dashboard config file
         uses: actions/github-script@v6
         with:
