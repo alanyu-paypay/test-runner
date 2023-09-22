@@ -22,9 +22,11 @@ jobs:
       - name: Get changed endpoints info
         id: get-changed-endpoints-info
         run: |
-          if [ ${{ github.event_name }} = "workflow_dispatch" ]; then            
+          if [ ${{ github.event_name }} = "workflow_dispatch" ]; then
+            echo "Triggerd manually"
             version=$(echo ${{ inputs.releaseBranch }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
           else
+            echo "Triggerd by pull request"
             version=$(echo ${{ github.event.pull_request.head.ref }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
           fi
           
