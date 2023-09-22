@@ -100,4 +100,4 @@ jobs:
         run: |
           cd tool/new-relic/dashboard-generator
           cat config/bff-release-ci.json
-          python tool/new-relic/dashboard-generator/dashboard-generator.py bff-release-ci "$NR_TOKEN"        
+          python dashboard-generator.py bff-release-ci "$NR_TOKEN"        
