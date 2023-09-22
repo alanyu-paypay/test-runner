@@ -55,6 +55,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Pay-Baymax/bff-tools
+          ref: master
           path: tool
       - name: Update dashboard config file
         uses: actions/github-script@v6
