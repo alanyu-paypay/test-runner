@@ -6,11 +6,11 @@ on:
         required: true
         type: string
         description: 'release branch name, e.g. release/1.0.0'
-  pull_request:
+  pull_request_target:
     types:
       - closed
     branches:
-      - 'release/**'
+      - 'master'
 
 jobs:
   get_changed_endpoints_info:
@@ -27,6 +27,10 @@ jobs:
             version=$(echo ${{ inputs.releaseBranch }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
           else
             echo "Triggerd by pull request"
+            if ! echo ${{ inputs.releaseBranch }} | grep -q "release"; then
+              echo "Merged branch is not a release branch"
+              exit 1
+            fi
             version=$(echo ${{ github.event.pull_request.head.ref }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
           fi
           
