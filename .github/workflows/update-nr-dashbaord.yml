@@ -12,13 +12,13 @@ on:
       - 'release/**'
 
 jobs:
-  get_version:
+  get_changed_endpoints_file_name:
     runs-on: ubuntu-latest
     outputs:
-      fileName: ${{ steps.get-release-version.outputs.fileName }}
+      fileName: ${{ steps.get-file-name.outputs.fileName }}
     steps:
       - name: Get changed endpoint file name
-        id: get-release-version
+        id: get-file-name
         run: |
           version=$(echo ${{ inputs.releaseBranch }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
           if [ -n "$version" ]; then
@@ -32,13 +32,13 @@ jobs:
           fi
   create_dashboard:
     runs-on: ubuntu-latest
-    needs: get_version
+    needs: get_changed_endpoints_file_name
     steps:
       - name: Get Release wiki
         uses: actions/checkout@v4
         with:
           repository: ${{github.repository}}.wiki
           sparse-checkout: |
-            ${{ needs.get_version.outputs.version }}.md
+            ${{ needs.get_changed_endpoints_file_name.outputs.fileName }}.md
           sparse-checkout-cone-mode: false
           path: wiki
