@@ -65,7 +65,6 @@ jobs:
             const fs = require('fs')
             const readline = require('readline');
             const fileName = `${{ needs.get_changed_endpoints_info.outputs.fileName }}`;
-            const wikiPath = `wiki\${fileName}`;
             const version = `${{ needs.get_changed_endpoints_info.outputs.releaseVersion }}`;
             
             // Read the JSON file
@@ -78,7 +77,7 @@ jobs:
             // Set changed endpoints
             let endpoints = config.endpoints;
             endpoints.push(`"## ${version} APIs`)
-            fs.readFile(wikiPath, 'utf8', (err, content) => {
+            fs.readFile(`wiki\\${fileName}`, 'utf8', (err, content) => {
               if (err) {
                 core.error('Error reading config file:', err);
                 core.setFailed(err);
