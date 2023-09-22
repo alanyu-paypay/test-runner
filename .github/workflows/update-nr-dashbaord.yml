@@ -22,8 +22,12 @@ jobs:
       - name: Get changed endpoints info
         id: get-changed-endpoints-info
         run: |
-          echo ${{ github.event_name }}
-          version=$(echo ${{ inputs.releaseBranch }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+          if [ ${{ github.event_name }} = "workflow_dispatch" ]; then            
+            version=$(echo ${{ inputs.releaseBranch }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+          else
+            version=$(echo ${{ github.event.pull_request.head.ref }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+          fi
+          
           if [ -n "$version" ]; then
             echo "Release version is: $version"
             echo "File name is: Changed-Endpoints-$version.md"
