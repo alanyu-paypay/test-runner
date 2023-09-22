@@ -25,7 +25,7 @@ jobs:
           if [ -n "$version" ]; then
             echo "Release version is: $version"
             echo "File name is: Changed-Endpoints-$version.md"
-            echo "releaseVersion=$version" >> "GITHUB_OUTPUT"
+            echo "releaseVersion=$version" >> "$GITHUB_OUTPUT"
             echo "fileName=Changed-Endpoints-$version.md" >> "$GITHUB_OUTPUT"
             cat 
           else
@@ -66,7 +66,6 @@ jobs:
             const readline = require('readline');
             const fileName = `${{ needs.get_changed_endpoints_info.outputs.fileName }}`;
             const version = `${{ needs.get_changed_endpoints_info.outputs.releaseVersion }}`;
-            console.log(version)
             
             // Read the JSON file
             const data = fs.readFileSync('tool/new-relic/dashboard-generator/config/bff-release-ci.json', 'utf8');
@@ -78,21 +77,13 @@ jobs:
             
             // Set changed endpoints
             const endpoints = config.endpoints;
-            console.log(endpoints)
             endpoints.push(`"## ${version} APIs`)
-            fs.readFile(`wiki/${fileName}`, 'utf8', (err, content) => {
-              if (err) {
-                core.error('Error reading config file:', err);
-                core.setFailed(err);
-              }
-              console.log(content)
-            
-              // Parse the JSON data
-              content.split(/\r?\n/).forEach(line => {
-                if(line.length > 0) {
-                  endpoints.push(line);
-                }});
-            });
+            const wikiContent = fs.readFileSync(`wiki/${fileName}`, 'utf8');
+            // Parse the JSON data
+            wikiContent.split(/\r?\n/).forEach(line => {
+              if(line.length > 0) {
+                endpoints.push(line);
+              }});
 
             console.log(config)
 
