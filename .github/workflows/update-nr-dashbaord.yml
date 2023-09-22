@@ -66,6 +66,7 @@ jobs:
             const readline = require('readline');
             const fileName = `${{ needs.get_changed_endpoints_info.outputs.fileName }}`;
             const version = `${{ needs.get_changed_endpoints_info.outputs.releaseVersion }}`;
+            console.log(version)
             
             // Read the JSON file
             const data = fs.readFileSync('tool/new-relic/dashboard-generator/config/bff-release-ci.json', 'utf8');
@@ -73,15 +74,18 @@ jobs:
             
             // Set dashboard title
             config.title = `BFF Release ${version} - Changed Endpoints`;
+            console.log(config.title)
             
             // Set changed endpoints
-            let endpoints = config.endpoints;
+            const endpoints = config.endpoints;
+            console.log(endpoints)
             endpoints.push(`"## ${version} APIs`)
             fs.readFile(`wiki/${fileName}`, 'utf8', (err, content) => {
               if (err) {
                 core.error('Error reading config file:', err);
                 core.setFailed(err);
               }
+              console.log(content)
             
               // Parse the JSON data
               content.split(/\r?\n/).forEach(line => {
@@ -89,6 +93,8 @@ jobs:
                   endpoints.push(line);
                 }});
             });
+
+            console.log(config)
 
             // Write to file
             fs.writeFileSync('tool/new-relic/dashboard-generator/config/bff-release-ci.json', JSON.stringify(config, null, 2), 'utf8');
