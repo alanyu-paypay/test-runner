@@ -77,7 +77,7 @@ jobs:
             
             // Set changed endpoints
             const endpoints = config.endpoints;
-            endpoints.push(`"## ${version} APIs`)
+            endpoints.push(`## ${version} APIs`)
             const wikiContent = fs.readFileSync(`wiki/${fileName}`, 'utf8');
             // Parse the JSON data
             wikiContent.split(/\r?\n/).forEach(line => {
