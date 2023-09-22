@@ -46,6 +46,8 @@ jobs:
           path: wiki
       - name: Check file
         run: |
+          ls
+          ls wiki
           file=${{ needs.get_changed_endpoints_info.outputs.fileName }}
           if [ -f "wiki/$file" ]; then
             echo "$file exists."
