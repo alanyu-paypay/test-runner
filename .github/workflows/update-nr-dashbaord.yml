@@ -77,14 +77,14 @@ jobs:
             // Set changed endpoints
             let endpoints = config.endpoints;
             endpoints.push(`"## ${version} APIs`)
-            fs.readFile(`wiki\${fileName}`, 'utf8', (err, data) => {
+            fs.readFile(`wiki\${fileName}`, 'utf8', (err, content) => {
               if (err) {
                 core.error('Error reading config file:', err);
                 core.setFailed(err);
               }
             
               // Parse the JSON data
-              data.split(/\r?\n/).forEach(line => {
+              content.split(/\r?\n/).forEach(line => {
                 if(line.length > 0) {
                   endpoints.push(line);
                 }});
