@@ -46,14 +46,11 @@ jobs:
           path: wiki
       - name: Check file
         run: |
-          ls
-          ls wiki
           file=${{ needs.get_changed_endpoints_info.outputs.fileName }}
-          if [ -f "wiki/$file" ]; then
-            echo "$file exists."
-          fi
+          if [ ! -e "wiki/$file" ]; then
             echo "$file doesn't exist."
-            exit 1
+          fi
+
       - name: Get NR tools
         uses: actions/checkout@v4
         with:
