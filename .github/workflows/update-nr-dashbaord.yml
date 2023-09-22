@@ -1,0 +1,45 @@
+name: release-changed-endpoints
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseBranch:
+        required: true
+        type: string
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'release/**'
+
+jobs:
+  get_version:
+    runs-on: ubuntu-latest
+    outputs:
+      fileName: ${{ steps.get-release-version.outputs.fileName }}
+    steps:
+      - name: Get changed endpoint file name
+        id: get-release-version
+        run: |
+          version=$(echo ${{ inputs.releaseBranch }} | grep -oP '[0-9]+\.[0-9]+\.[0-9]+')
+          if [ -n "$version" ]; then
+            echo "Release version is: $version"
+            echo "File name is: Changed-Endpoints-$version.md"
+            echo "fileName=Changed-Endpoints-$version.md" >> "$GITHUB_OUTPUT"
+            cat 
+          else
+            echo "Parsed fail"
+            exit 1
+          fi
+  create_dashboard:
+    runs-on: ubuntu-latest
+    needs: get_version
+    steps:
+      - name: Get Release wiki
+        uses: actions/checkout@v4
+        with:
+          repository: ${{github.repository}}.wiki
+          sparse-checkout: |
+            ${{ needs.get_version.outputs.version }}.md
+          sparse-checkout-cone-mode: false
+          path: wiki
