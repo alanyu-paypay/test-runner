@@ -47,7 +47,7 @@ jobs:
       - name: Check file
         run: |
           file=${{ needs.get_changed_endpoints_info.outputs.fileName }}
-          if [ -f "$file" ]; then
+          if [ -f "wiki/$file" ]; then
             echo "$file exists."
           fi
             echo "$file doesn't exist."
