@@ -1,5 +1,4 @@
-name: release-changed-endpoints
-
+name: update-nr-dashboard
 on:
   workflow_dispatch:
     inputs:
